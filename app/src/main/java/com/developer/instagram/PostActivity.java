@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.MimeTypeMap;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,11 +28,16 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
+import com.hendraanggrian.appcompat.socialview.Hashtag;
+import com.hendraanggrian.appcompat.widget.HashtagArrayAdapter;
 import com.hendraanggrian.appcompat.widget.SocialAutoCompleteTextView;
 import com.theartofdev.edmodo.cropper.CropImage;
 
@@ -114,7 +120,6 @@ public class PostActivity extends AppCompatActivity {
                     map.put("ImageUrl",imageUrl);
                     map.put("Description",description.getText().toString());
                     map.put("Publisher", FirebaseAuth.getInstance().getCurrentUser().getUid());
-
                     ref.child(postId).setValue(map);
 
                     DatabaseReference mHashTagRef = FirebaseDatabase.getInstance().getReference().child("HashTags");
@@ -127,7 +132,7 @@ public class PostActivity extends AppCompatActivity {
                             map.clear();
                             map.put("Tag",tag.toLowerCase());
                             map.put("PostId",postId);
-                            mHashTagRef.child(tag.toLowerCase()).setValue(map);
+                            mHashTagRef.child(tag.toLowerCase()).child(postId).setValue(map);
                         }
                     }
                     pd.dismiss();
@@ -146,7 +151,6 @@ public class PostActivity extends AppCompatActivity {
         {
             Toast.makeText(this, "No image was selected", Toast.LENGTH_SHORT).show();
         }
-
 
     }
 
@@ -175,5 +179,27 @@ public class PostActivity extends AppCompatActivity {
             finish();
         }
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        final ArrayAdapter<Hashtag> hashtagAdapter = new HashtagArrayAdapter<>(getApplicationContext());
+        FirebaseDatabase.getInstance().getReference().child("HashTags").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot:dataSnapshot.getChildren())
+                {
+                    hashtagAdapter.add(new Hashtag(snapshot.getKey(),(int)snapshot.getChildrenCount()));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        description.setHashtagAdapter(hashtagAdapter);
     }
 }
