@@ -61,8 +61,6 @@
                 android:layout_margin="5dp"/>
 
         </LinearLayout>
-
-
     </androidx.core.widget.NestedScrollView>
 
 </RelativeLayout>

@@ -25,7 +25,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.hendraanggrian.appcompat.widget.SocialAutoCompleteTextView;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +35,6 @@ public class SearchFragment extends Fragment {
     private SocialAutoCompleteTextView search_bar;
     private List<User> mUsers;
     private UserAdapter userAdapter;
-
 
     //Hash tags
     private RecyclerView recyclerViewTags;
@@ -81,8 +79,6 @@ public class SearchFragment extends Fragment {
             }
         });
 
-
-
         //........Hash tags........
         recyclerViewTags = view.findViewById(R.id.recycler_view_tags);
         recyclerViewTags.setHasFixedSize(true);
@@ -93,7 +89,6 @@ public class SearchFragment extends Fragment {
         recyclerViewTags.setAdapter(tagAdapter);
 
         readTags();
-
 
     return view;
     }
