@@ -1,6 +1,7 @@
 package com.developer.instagram.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.developer.instagram.CommentActivity;
 import com.developer.instagram.Model.Post;
 import com.developer.instagram.Model.User;
 import com.developer.instagram.R;
@@ -72,6 +74,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
                 });
         isLiked(post.getPostId(),holder.like);
         noOfLikes(post.getPostId(),holder.noOfLikes);
+        getComments(post.getPostId(),holder.noOfComments);
         holder.like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -88,6 +91,24 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
                             .child("Likes").child(post.getPostId())
                             .child(firebaseUser.getUid()).removeValue();
                 }
+            }
+        });
+        holder.comment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, CommentActivity.class);
+                intent.putExtra("postId",post.getPostId());
+                intent.putExtra("publisher",post.getPublisher());
+                mContext.startActivity(intent);
+            }
+        });
+        holder.noOfComments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, CommentActivity.class);
+                intent.putExtra("postId",post.getPostId());
+                intent.putExtra("publisher",post.getPublisher());
+                mContext.startActivity(intent);
             }
         });
 
@@ -176,5 +197,20 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyViewHolder> 
 
                     }
                 });
+    }
+    private void getComments(String postId,final TextView text)
+    {
+        FirebaseDatabase.getInstance().getReference().child("Comments")
+                .child(postId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                text.setText("View all "+dataSnapshot.getChildrenCount()+" Comments");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }

@@ -15,9 +15,13 @@
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/toolbar"
+        android:id="@+id/recycler_view"
+        android:layout_above="@id/bottom"
         />
 
     <RelativeLayout
+        android:id="@+id/bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#ffffff"
@@ -31,7 +35,7 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/image_profile"
+            android:layout_toEndOf="@id/image_profile"
             android:hint="Add a comment..."
             android:id="@+id/add_comment"
             android:layout_centerVertical="true"
@@ -49,6 +53,7 @@
            android:layout_alignParentEnd="true"
             android:layout_marginEnd="5dp"
             android:textColor="@color/colorPrimaryDark"
+
            />
 
     </RelativeLayout>
